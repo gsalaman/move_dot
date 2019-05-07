@@ -4,7 +4,7 @@
 import sys, os
 import termios, fcntl
 
-# Time is used in our main loop for delay functionality.
+# used to slow down our main loop
 import time
 
 ################################
@@ -43,8 +43,8 @@ from PIL import Image, ImageDraw
 # our led matrix is 64x64.
 matrix_size = 64
 
-# the "draw size" for our ball is 4 pixels. 
-sprite_size = 4
+# the "draw size" for our ball in pixels 
+sprite_size = 5
 
 options = RGBMatrixOptions()
 options.rows = matrix_size 
@@ -82,42 +82,56 @@ player_x = matrix_size / 2
 player_y = matrix_size / 2
 show_player(True)
 
-print "controls:  i=up, j=left, k=down, l=right, q=quit"
+# player starts without motion
+current_dir = "stop"
+
+print "controls:  i=up, j=left, k=down, l=right, s=stop, q=quit"
 while True:
   key = getch_noblock()
 
   if key == 'q':
      break    
-
   if key == 'i':
+    current_dir = "up" 
+  if key == 'k':
+    current_dir = "down" 
+  if key == 'j':
+    current_dir = "left" 
+  if key == 'l':
+    current_dir = "right" 
+  if key == 's':
+    current_dir = "stop"
+
+  if current_dir == "up":
      # only move the player if there is room to go up.
      if player_y > 0:
         show_player(False)
         player_y = player_y - 1
         show_player(True)
 
-  if key == 'j':
+  if current_dir == "left":
      # only move the player if there is room to go left.
      if player_x > 0:
         show_player(False)
         player_x = player_x - 1
         show_player(True)
 
-  if key == 'k':
+  if current_dir == "down":
      # only move the player if there is room to go down.
-     if player_y < matrix_size - sprite_size - 1:
+     if player_y < matrix_size - sprite_size: 
         show_player(False)
         player_y = player_y + 1
         show_player(True)
 
-  if key == 'l':
+  if current_dir == "right":
      # only move the player if there is room to go right.
-     if player_x < matrix_size - sprite_size - 1:
+     if player_x < matrix_size - sprite_size:
         show_player(False)
         player_x = player_x + 1
         show_player(True)
 
-  time.sleep(.2)
+  time.sleep(.05)
+
 
 ###################################
 # Reset the terminal on exit
